@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">WeekBarChart</string>
+
+    <string name="x_label_format">M/d</string>
+</resources>

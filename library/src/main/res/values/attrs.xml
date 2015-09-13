@@ -1,0 +1,17 @@
+<resources>
+    <declare-styleable name="WeekBarChart">
+        <attr name="main_color" format="color" />
+        <attr name="selected_color" format="color" />
+        <attr name="days" format="integer" />
+        <attr name="weekday_color" format="color" />
+        <attr name="saturday_color" format="color" />
+        <attr name="sunday_color" format="color" />
+        <attr name="x_label_format" format="string" />
+        <attr name="x_label_text_size" format="dimension" />
+        <attr name="value_label_text_size" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="Themes">
+        <attr name="weekBarChartStyle" format="reference" />
+    </declare-styleable>
+</resources>
