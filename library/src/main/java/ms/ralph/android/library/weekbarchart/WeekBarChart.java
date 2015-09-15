@@ -149,7 +149,7 @@ public class WeekBarChart extends LinearLayout {
         chart.setDoubleTapToZoomEnabled(false);
         chart.setDescription("");
         chart.getLegend().setEnabled(false);
-        chart.setBackgroundColor(Color.argb(0, 0, 0, 0));
+        chart.setGridBackgroundColor(Color.argb(0, 0, 0, 0));
 
         ArrayList<Integer> xColor = new ArrayList<>();
         for (int i = 0; i < days; i++) {

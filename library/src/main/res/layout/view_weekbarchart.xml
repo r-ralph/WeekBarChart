@@ -3,6 +3,7 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
+              android:background="#00000000"
         >
 
     <com.github.mikephil.charting.charts.BarChart
@@ -12,6 +13,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="-10dp"
             android:layout_weight="1"
+            android:background="#00000000"
             />
 
     <com.appyvet.rangebar.RangeBar
@@ -21,5 +23,6 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
+            android:background="#00000000"
             />
 </LinearLayout>
