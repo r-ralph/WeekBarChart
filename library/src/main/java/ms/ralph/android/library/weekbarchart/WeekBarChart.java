@@ -129,12 +129,27 @@ public class WeekBarChart extends LinearLayout {
         initRangeBar();
     }
 
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        switch (event.getActionMasked()) {
+            case MotionEvent.ACTION_DOWN:
+                getParent().requestDisallowInterceptTouchEvent(true);
+                break;
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
+                getParent().requestDisallowInterceptTouchEvent(false);
+                break;
+        }
+        return super.dispatchTouchEvent(event);
+    }
+
     private void initBarChart() {
         chart.setDrawValueAboveBar(true);
         chart.setDrawMarkerViews(false);
         chart.setDoubleTapToZoomEnabled(false);
         chart.setDescription("");
         chart.getLegend().setEnabled(false);
+        chart.setBackgroundColor(Color.argb(0, 0, 0, 0));
 
         ArrayList<Integer> xColor = new ArrayList<>();
         for (int i = 0; i < days; i++) {
