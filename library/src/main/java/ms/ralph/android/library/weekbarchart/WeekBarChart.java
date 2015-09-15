@@ -47,6 +47,8 @@ public class WeekBarChart extends LinearLayout {
 
     private RangeBar bar;
 
+    private OnRangeChangeListener onRangeChangeListener;
+
     private ArrayList<String> xLabel;
 
     private ArrayList<Integer> colors;
@@ -209,7 +211,7 @@ public class WeekBarChart extends LinearLayout {
                             end = startTemp - end;
                             startTemp = startTemp - end;
                         }
-                        changeRange(startTemp, end, true);
+                        changeRange(startTemp, end, true, true);
                         break;
                 }
                 return true;
@@ -223,7 +225,7 @@ public class WeekBarChart extends LinearLayout {
         bar.setOnRangeBarChangeListener(new RangeBar.OnRangeBarChangeListener() {
             @Override
             public void onRangeChangeListener(RangeBar rangeBar, int start, int end, String s, String s1) {
-                changeRange(start, end, false);
+                changeRange(start, end, false, true);
             }
         });
         bar.setTickColor(Color.argb(0, 0, 0, 0));
@@ -233,12 +235,16 @@ public class WeekBarChart extends LinearLayout {
         bar.setConnectingLineColor(colorSelected);
     }
 
-    private void changeRange(int start, int end, boolean actionByChart) {
+    private void changeRange(int start, int end, boolean actionByChart, boolean notify) {
         if (prevStart == start && prevEnd == end) {
             return;
         }
         start = Math.min(Math.max(start, 0), days - 1);
         end = Math.max(Math.min(end, days - 1), 0);
+
+        if (notify && onRangeChangeListener != null) {
+            onRangeChangeListener.onRangeChange(start, end);
+        }
 
         prevStart = start;
         prevEnd = end;
@@ -259,7 +265,7 @@ public class WeekBarChart extends LinearLayout {
     }
 
     public void setRange(int start, int end) {
-        changeRange(start, end, true);
+        changeRange(start, end, true, false);
     }
 
     public void setData(int[] rawData) {
@@ -285,5 +291,14 @@ public class WeekBarChart extends LinearLayout {
         barData.setValueTextSize(valueLabelTextSize);
         barData.setDrawValues(true);
         chart.setData(barData);
+    }
+
+    public void setOnRangeChangeListener(OnRangeChangeListener onRangeChangeListener) {
+        this.onRangeChangeListener = onRangeChangeListener;
+    }
+
+    public interface OnRangeChangeListener {
+
+        void onRangeChange(int start, int end);
     }
 }
