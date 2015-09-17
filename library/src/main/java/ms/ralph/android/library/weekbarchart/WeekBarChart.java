@@ -49,6 +49,8 @@ public class WeekBarChart extends LinearLayout {
 
     private OnRangeChangeListener onRangeChangeListener;
 
+    private OnRangeChangeFinishListener onRangeChangeFinishListener;
+
     private ArrayList<String> xLabel;
 
     private ArrayList<Integer> colors;
@@ -131,6 +133,7 @@ public class WeekBarChart extends LinearLayout {
         initRangeBar();
     }
 
+    @SuppressWarnings("NullableProblems")
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
         switch (event.getActionMasked()) {
@@ -197,12 +200,14 @@ public class WeekBarChart extends LinearLayout {
             @Override
             public boolean onTouch(View view, MotionEvent event) {
                 Highlight highlight = chart.getHighlightByTouchPoint(event.getX(), event.getY());
+                boolean finish = false;
                 switch (event.getAction() & MotionEvent.ACTION_MASK) {
                     case MotionEvent.ACTION_DOWN:
                         start = highlight.getXIndex();
                         break;
                     case MotionEvent.ACTION_UP:
                     case MotionEvent.ACTION_POINTER_UP:
+                        finish = true;
                     case MotionEvent.ACTION_MOVE:
                         int startTemp = start;
                         int end = highlight.getXIndex();
@@ -212,6 +217,9 @@ public class WeekBarChart extends LinearLayout {
                             startTemp = startTemp - end;
                         }
                         changeRange(startTemp, end, true, true);
+                        if (finish && onRangeChangeFinishListener != null) {
+                            onRangeChangeFinishListener.onRangeChangeFinish(startTemp, end);
+                        }
                         break;
                 }
                 return true;
@@ -226,6 +234,14 @@ public class WeekBarChart extends LinearLayout {
             @Override
             public void onRangeChangeListener(RangeBar rangeBar, int start, int end, String s, String s1) {
                 changeRange(start, end, false, true);
+            }
+        });
+        bar.setOnRangeBarChangeFinishListener(new RangeBar.OnRangeBarChangeFinishListener() {
+            @Override
+            public void onRangeChangeFinish(RangeBar rangeBar, int start, int end, String s, String s1) {
+                if (onRangeChangeFinishListener != null) {
+                    onRangeChangeFinishListener.onRangeChangeFinish(start, end);
+                }
             }
         });
         bar.setTickColor(Color.argb(0, 0, 0, 0));
@@ -293,12 +309,23 @@ public class WeekBarChart extends LinearLayout {
         chart.setData(barData);
     }
 
+    @SuppressWarnings("unused")
     public void setOnRangeChangeListener(OnRangeChangeListener onRangeChangeListener) {
         this.onRangeChangeListener = onRangeChangeListener;
+    }
+
+    @SuppressWarnings("unused")
+    public void setOnRangeCahngeFinishListener(OnRangeChangeFinishListener listener) {
+        this.onRangeChangeFinishListener = listener;
     }
 
     public interface OnRangeChangeListener {
 
         void onRangeChange(int start, int end);
+    }
+
+    public interface OnRangeChangeFinishListener {
+
+        void onRangeChangeFinish(int start, int end);
     }
 }
