@@ -32,6 +32,8 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.os.Build;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.text.format.DateFormat;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -76,6 +78,8 @@ public class WeekBarChart extends LinearLayout {
     private float xLabelTextSize;
 
     private float valueLabelTextSize;
+
+    private int[] data;
 
     public WeekBarChart(Context context) {
         this(context, null);
@@ -146,6 +150,48 @@ public class WeekBarChart extends LinearLayout {
                 break;
         }
         return super.dispatchTouchEvent(event);
+    }
+
+    @Override
+    protected Parcelable onSaveInstanceState() {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("instanceState", super.onSaveInstanceState());
+        bundle.putInt("PREV_START", prevStart);
+        bundle.putInt("PREV_END", prevEnd);
+        bundle.putInt("MAIN_COLOR", colorMain);
+        bundle.putInt("SELECTED_COLOR", colorSelected);
+        bundle.putInt("DAYS", days);
+        bundle.putInt("COLOR_WEEKDAY", colorWeekday);
+        bundle.putInt("COLOR_SATURDAY", colorSaturday);
+        bundle.putInt("COLOR_SUNDAY", colorSunday);
+        bundle.putString("X_LABEL_FORMAT", xLabelFormat);
+        bundle.putFloat("X_LABEL_TEXT_SIZE", xLabelTextSize);
+        bundle.putFloat("VALUE_LABEL_TEXT_SIZE", valueLabelTextSize);
+        bundle.putIntArray("DATA", data);
+        return bundle;
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Parcelable state) {
+        if (state instanceof Bundle) {
+            Bundle bundle = (Bundle) state;
+            prevStart = bundle.getInt("PREV_START");
+            prevEnd = bundle.getInt("PREV_END");
+            colorMain = bundle.getInt("MAIN_COLOR");
+            colorSelected = bundle.getInt("SELECTED_COLOR");
+            days = bundle.getInt("DAYS");
+            colorWeekday = bundle.getInt("COLOR_WEEKDAY");
+            colorSaturday = bundle.getInt("COLOR_SATURDAY");
+            colorSunday = bundle.getInt("COLOR_SUNDAY");
+            xLabelFormat = bundle.getString("X_LABEL_FORMAT");
+            xLabelTextSize = bundle.getFloat("X_LABEL_TEXT_SIZE");
+            valueLabelTextSize = bundle.getFloat("VALUE_LABEL_TEXT_SIZE");
+            data = bundle.getIntArray("DATA");
+            super.onRestoreInstanceState(bundle.getParcelable("instanceState"));
+            setData(data);
+        } else {
+            super.onRestoreInstanceState(state);
+        }
     }
 
     private void initBarChart() {
@@ -288,6 +334,7 @@ public class WeekBarChart extends LinearLayout {
         if (rawData.length != days) {
             throw new RuntimeException("Array size must be same with days. Array : " + rawData.length + ", Days : " + days);
         }
+        this.data = rawData;
         ArrayList<BarEntry> data = new ArrayList<>();
         for (int i = 0; i < days; i++) {
             data.add(new BarEntry(rawData[i], i));
